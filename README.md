@@ -63,10 +63,8 @@
 5. (Optional) Verify that Grafana Alloy is running.
    - You can access the Grafana Alloy UI at [http://localhost:12345](http://localhost:12345).
 
+![alloy](./docs/images/alloy.png)
 
-<!-- INTERACTIVE page step1.md END -->
-
-<!-- INTERACTIVE page step2.md START -->
 
 ## 在grafana中进行简单语句查询
 
@@ -99,6 +97,8 @@
       Loki queries always start with a label selector.
       In the previous query, the label selector is `{container="evaluate-loki-flog-1"}`.
 
+![flog_logs_1](./docs/images/flog_logs_1.png)
+![flog_logs_2](./docs/images/flog_logs_2.png)
    1. To view all the log lines which have the container label `evaluate-loki-grafana-1`:
       <!-- INTERACTIVE copy START -->
       ```bash
@@ -196,3 +196,6 @@ loki.source.file "node_logs" {
       - gateway
     networks:
       - loki
+```
+在grafana里面就可以看到有K8s组件信息
+![k8s_logs](./docs/images/k8s_logs.png)
