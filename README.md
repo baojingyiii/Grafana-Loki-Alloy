@@ -1,6 +1,46 @@
 # Quickstart to run Loki locally
 
+## 理解日志系统
+
+![流程图](./docs/images/日志框架流程图.png)
+
+`alloy-local-config.yaml`文件：
+
+```yaml
+discovery.docker "flog_scrape" {
+	host             = "unix:///var/run/docker.sock"   # 收集当前节点上所有的 Docker 容器
+	refresh_interval = "5s"
+}
+
+discovery.relabel "flog_scrape" {
+	targets = []
+
+	rule {
+		source_labels = ["__meta_docker_container_name"]
+		regex         = "/(.*)"
+		target_label  = "container"
+	}
+}
+
+loki.source.docker "flog_scrape" {
+	host             = "unix:///var/run/docker.sock"
+	targets          = discovery.docker.flog_scrape.targets
+	forward_to       = [loki.write.default.receiver]
+	relabel_rules    = discovery.relabel.flog_scrape.rules
+	refresh_interval = "5s"
+}
+
+loki.write "default" {
+	endpoint {
+		url       = "http://gateway:3100/loki/api/v1/push"
+		tenant_id = "tenant1"
+	}
+	external_labels = {}
+}
+```
+
 ## 快速构建Grafana+Loki+Alloy日志系统
+
 > 参考官方文档：https://grafana.com/docs/loki/latest/get-started/quick-start/quick-start/
 > 
 **To install Loki locally, follow these steps:**
